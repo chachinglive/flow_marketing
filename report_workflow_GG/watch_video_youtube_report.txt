@@ -1,0 +1,38 @@
+FLOW: Xem Video YouTube “du lịch Đà Lạt” (xem_video_y.txt)
+Mục tiêu: Tự động mở YouTube → tìm “du lịch Đà Lạt” → click video đầu tiên → xem ngay!
+
+Bước 1: Chạy FLOW: Gmail Login 2FA(gmail_login_2fa) để đăng nhập trước khi tìm kiếm
+Bước 2: Chạy FLOW: watch_video_youtube
+
+NODE 1.
+
+self.lib_ToUrl('https://www.youtube.com')
+-> Mở trang chủ YouTube
+
+a = self.lib_ElGetXPath('//yt-searchbox[@role="search" and contains(@class, "ytSearchboxComponentHost")]')
+-> Lấy khung search chính
+
+if a is not None:
+  a_children = self.lib_ElGetXPathFrom(a, './/input[@role="combobox" and @name="search_query"]')
+  -> Lấy ô nhập liệu bên trong khung
+
+  if a_children is not None:
+    self.lib_ElSendKeys(a_children, 'du lịch Đà Lạt')
+    self.lib_SendKeysEnter(a_children)
+  -> Gõ từ khóa + nhấn Enter → ra kết quả tìm kiếm.
+
+NODE 2.
+
+self.lib_Sleep(15)
+-> Chờ 15 giây để thumbnail load đầy đủ
+
+a = self.lib_ElGetXPath('//div[@id="contents"and contains(@class, "style-scope") and contains(@class, "ytd-section-list-renderer")]')
+-> Lấy vùng chứa danh sách video
+
+if a is not None:
+  a_children = self.lib_ElGetXPathFrom(a, './/a[@id="video-title" and contains(@class, "yt-simple-endpoint") and contains(@class, "style-scope") and contains(@class, "ytd-video-renderer")]')
+  -> Lấy link tiêu đề của video đầu tiên
+
+  if a_children is not None:
+    self.lib_ElClick(a_children)
+  -> Click mở video → bắt đầu xem

@@ -1,0 +1,72 @@
+FLOW: Gmail Login 2FA (gmail_login_2fa)
+Mục tiêu: Tự động đăng nhập vào tài khoản Gmail bằng script trong Flow Master.
+
+1. Chuyển sang tab “gmail”
+return self.lib_SwitchToTab('gmail')
+→ Chuyển sang tab đang mở Gmail trong trình duyệt.
+
+2. Tạm dừng 5 giây
+self.lib_Sleep(5)
+→ Cho trang Gmail hoặc trình duyệt ổn định trước khi thao tác tiếp.
+
+3. Truy cập URL đăng nhập Gmail
+self.lib_ToUrl('https://mail.google.com/')
+→ Tự động mở trang đăng nhập Gmail.
+
+4. Bắt XPath nút “Sign in Gmail”
+return self.lib_ElGetXPath("//a[@class='button button--medium header__aside__button button--desktop button--tablet button--mobile' and @aria-label='Open the Sign into Gmail page in a new tab']")
+→ Lấy vị trí của nút “Sign in” trên giao diện.
+
+5. Click vào nút “Sign in Gmail”
+self.lib_ElClick(self.context_result[4])
+→ Nhấn nút để chuyển sang trang đăng nhập Gmail.
+
+6. Tạm dừng 5 giây
+self.lib_Sleep(5)
+→ Đợi trang đăng nhập Gmail tải xong.
+
+7. Bắt XPath ô nhập email
+return self.lib_ElGetXPath("//input[@id='identifierId']")
+→ Xác định ô nhập địa chỉ email.
+
+8. Click vào ô nhập email
+self.lib_ElClick(self.context_result[7])
+→ Đưa con trỏ vào ô nhập email.
+
+9. Điền tên đăng nhập Gmail
+self.lib_ElSendKeys(self.context_result[7], self.account_info['gmail-user'])
+→ Tự động nhập tên người dùng Gmail (lấy từ thông tin tài khoản).
+
+10. Bắt XPath nút “Next”
+return self.lib_ElGetXPath("//button[.//span[normalize-space()='Next']]")
+→ Xác định nút “Next” để chuyển sang bước nhập mật khẩu.
+
+11. Click vào nút “Next” và đợi 5 giây
+self.lib_ElClick(self.context_result[10])
+self.lib_Sleep(5)
+→ Nhấn nút “Next”, tạm dừng để trang tải phần nhập mật khẩu.
+
+12. Bắt XPath ô nhập mật khẩu
+return self.lib_ElGetXPath("//input[@name='Passwd']")
+→ Lấy vị trí ô nhập mật khẩu.
+
+13. Click vào ô nhập mật khẩu
+self.lib_ElClick(self.context_result[12])
+→ Đưa con trỏ vào ô nhập mật khẩu.
+
+14. Điền mật khẩu Gmail
+self.lib_ElSendKeys(self.context_result[12], self.account_info['gmail-pass'])
+→ Tự động nhập mật khẩu Gmail (lấy từ dữ liệu tài khoản).
+
+15. Bắt XPath nút “Next” sau khi nhập mật khẩu
+return self.lib_ElGetXPath("//button[.//span[text()='Next']]")
+→ Xác định lại nút “Next” để hoàn tất quá trình đăng nhập.
+
+16. Click vào nút “Next” để hoàn tất
+self.lib_ElClick(self.context_result[15])
+→ Gửi thông tin đăng nhập và hoàn tất quy trình login.
+
+17. Chụp lại màn hình giao diện
+self.lib_Sleep(10)
+self.lib_ScreenshotImageBrowser()
+-> Chụp lại màn hình giao diện để xác nhận đã đăng nhập thành công chưa hay cần phải xác thực 2fa

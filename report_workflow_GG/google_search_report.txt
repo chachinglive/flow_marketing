@@ -1,0 +1,48 @@
+FLOW: Google Search & Click First Result (gg_search)
+Mục tiêu: Tự động tìm kiếm “du lịch Đà Lạt” trên Google và click vào kết quả đầu tiên.
+
+Bước 1: Chạy FLOW: Gmail Login 2FA(gmail_login_2fa) để đăng nhập trước khi tìm kiếm
+Bước 2: Chạy FLOW: Auto-Read Email(workflow_read_gg_mail) 
+
+Node 1.
+
+self.lib_ToUrl('https://www.google.com')
+-> Tới trang chủ Google.
+
+a = self.lib_ElGetXPath('//form[@action="/search" and @role="search"]')
+-> Lấy form search chính (có action=/search).
+
+if a is not None:
+-> Kiểm tra a có tồn tại không
+
+    b = self.lib_ElGetXPathFrom(a, './/textarea[@aria-label="Tìm kiếm" and @role="combobox"]')
+    -> Từ form, lấy ô nhập liệu tiếng Việt.
+    
+    if b is not None:
+    -> Kiểm tra tìm thấy ô search chưa.
+
+       self.lib_ElSendKeys(b, 'du lịch Đà Lạt')
+       -> Gõ từ khóa.
+
+       self.lib_SendKeysEnter(b)
+       -> Nhấn Enter search
+
+NODE 2
+
+a = self.lib_ElGetXPath('//div[@id="center_col" and @role="main"]')
+-> Lấy cột giữa chứa kết quả.
+
+if a is not None:
+-> Kiểm tra a có tồn tại không.
+
+     b = self.lib_ElGetXPathFrom(a, './/a[@jsname="UWckNb" and @class="zReHs"]')
+     -> Lấy link kết quả tự nhiên đầu tiên.
+
+     if b is not None:
+     -> Kiểm tra thấy link chưa.
+
+       self.lib_ElClick(b)
+       -> Click mở tab mới.
+
+       self.lib_ScreenshotImageBrowser()
+       -> Chụp ảnh trang đích làm bằng chứng.
